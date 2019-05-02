@@ -102,3 +102,5 @@ let isArray = (a) => {
 let isObject = (a) => {
     return (!!a) && (a.constructor === Object);
 };
+//export app for testing
+exports.app = app;
