@@ -5,14 +5,9 @@
 
 const express = require('express')
 const app = express()
-const handler = require('./function/handler');
-const bodyParser = require('body-parser')
+const {handler, expressConfig} = require('./function/handler');
 
-// app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(bodyParser.raw());
-app.use(bodyParser.text({ type : "text/*" }));
-app.disable('x-powered-by');
+const bodyParser = require('body-parser')
 
 class FunctionEvent {
     constructor(req) {
@@ -21,6 +16,7 @@ class FunctionEvent {
         this.method = req.method;
         this.query = req.query;
         this.path = req.path;
+        this.req = req;
     }
 }
 
@@ -79,6 +75,13 @@ var middleware = (req, res) => {
 
     handler(fnEvent, fnContext, cb);
 };
+
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
+app.use(bodyParser.text({ type : "text/*" }));
+app.disable('x-powered-by');
+//Allow customization of express app in Handler module
+expressConfig(app);
 
 app.post('/*', middleware);
 app.get('/*', middleware);
